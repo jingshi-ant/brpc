@@ -16,6 +16,18 @@
 # Thie empty BUILD.bazel file is required to make Bazel treat
 # this directory as a package.
 
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+
+proto_library(
+    name = "echo_proto",
+    srcs = ["echo.proto"],
+)
+
+cc_proto_library(
+    name = "echo_cc_proto",
+    deps = [":echo_proto"],
+)
 
 cc_binary(
     name = "test",
@@ -27,3 +39,28 @@ cc_binary(
         "@apache_brpc//:butil",
     ],
 )
+
+cc_binary(
+    name = "echo_client",
+    srcs = ["client.cpp"],
+    deps = [
+        ":echo_cc_proto",
+        "@apache_brpc//:brpc",
+        "@apache_brpc//:bthread",
+        "@apache_brpc//:bvar",
+        "@apache_brpc//:butil",
+    ],
+)
+
+cc_binary(
+    name = "echo_server",
+    srcs = ["server.cpp"],
+    deps = [
+        ":echo_cc_proto",
+        "@apache_brpc//:brpc",
+        "@apache_brpc//:bthread",
+        "@apache_brpc//:bvar",
+        "@apache_brpc//:butil",
+    ],
+)
+
